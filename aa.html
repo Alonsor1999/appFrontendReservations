@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Solicitud POST</title>
+</head>
+<body>
+    <h1>Prueba de solicitud POST con JavaScript</h1>
+    
+    <script>
+        // Datos a enviar al backend
+        const data = {
+            ReservationPostDto: {
+                spaceId: '30f1f6fa-3d0d-4a18-934c-7cd5b3aa174e',  // GUID del espacio
+                userId: '3e38df11-e405-4549-a119-88ef234d7398',   // GUID del usuario
+                startDate: '2025-01-25T05:00:00.000Z',  // Fecha de inicio
+                endDate: '2025-01-26T05:00:00.000Z'    // Fecha de fin
+            }
+        };
+
+        // URL del backend donde se hará la petición
+        const apiUrl = 'http://localhost:5257/api/Reservation'; // Cambia esta URL por la de tu servidor
+
+        // Función para hacer la solicitud POST
+        function createReservation(data) {
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Tipo de contenido
+                },
+                body: JSON.stringify(data), // Convierte los datos a formato JSON
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errData => {
+                        throw new Error('Error: ' + JSON.stringify(errData));
+                    });
+                }
+                return response.json();  // Convierte la respuesta a JSON si todo está bien
+            })
+            .then(responseData => {
+                console.log('Reserva creada:', responseData);
+                alert('Reserva creada exitosamente.');
+            })
+            .catch(error => {
+                console.error('Error al hacer la solicitud:', error);
+                alert('Error al crear la reserva: ' + error.message);
+            });
+        }
+
+        // Llamar a la función para crear la reserva
+        createReservation(data);
+    </script>
+</body>
+</html>
