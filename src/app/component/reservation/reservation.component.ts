@@ -58,10 +58,15 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
 
   addReservation() {
-    this.dialog.open(AddReservationComponent, {
+    const dialogRef = this.dialog.open(AddReservationComponent, {
       width: '50%',
       exitAnimationDuration: '500ms',
       enterAnimationDuration: '500ms'
     });
+    // Escuchar el evento reservationSaved para actualizar la tabla
+    dialogRef.componentInstance.reservationSaved.subscribe(() => {
+      this.GetallReservation();  // Llamar a GetallReservation para actualizar la lista de reservas
+    });
   }
+  
 }

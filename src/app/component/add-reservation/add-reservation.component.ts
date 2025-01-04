@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Output, EventEmitter } from '@angular/core';  // Asegúrate de importar EventEmitter y Output
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -87,7 +87,9 @@ export class AddReservationComponent implements OnInit {
     endDate:new FormControl(new Date(),Validators.required),
   })
 
-  SaveEmployee() {
+  @Output() reservationSaved = new EventEmitter<void>();  // Emisor de evento
+
+  SaveReservation() {
     if (this.empForm.valid) {
       // Crear el objeto reservationPostDto con el formato esperado por la API
       let _data: any = {
@@ -105,6 +107,8 @@ export class AddReservationComponent implements OnInit {
       this.service.CreateReservation(_data).subscribe({
         next: () => {
           alert('Reserva guardada exitosamente.');
+          this.reservationSaved.emit();  // Emitir el evento después de guardar la reserva
+   
           // this.empForm.reset(); // Limpiar el formulario
           this.ref.close();
         },
