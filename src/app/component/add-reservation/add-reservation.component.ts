@@ -36,8 +36,19 @@ import { User } from '../../model/User';
 export class AddReservationComponent implements OnInit {
   spaces: Space[] = [];  // Aquí almacenamos los espacios obtenidos
   users: User[] = [];    // Almacenamos los usuarios obtenidos
+  minDate: Date = new Date();  // Asignamos una fecha inicial válida
+  maxDate: Date = new Date();  // Asignamos una fecha inicial válida
 
   ngOnInit(): void {
+    // Asignamos la fecha actual a minDate
+    const today = new Date();
+    this.minDate = today;  // Asignamos la fecha actual a minDate
+
+    // Calculamos la fecha máxima (hoy + 3 días)
+    const maxDate = new Date(today);  // Crear una nueva instancia para no modificar 'today'
+    maxDate.setDate(today.getDate() + 3);  // Sumar 3 días a la fecha actual
+    this.maxDate = maxDate;  // Asignamos la fecha máxima calculada
+
     // Llamar a la API para obtener los espacios disponibles
     this.service.getSpaces().subscribe({
       next: (response) => {
@@ -101,20 +112,21 @@ export class AddReservationComponent implements OnInit {
         },
       };
   
-      console.log(_data); // Verifica en la consola los datos a enviar
+      // console.log(_data); // Verifica en la consola los datos a enviar
   
       // Llamar al servicio para crear la reserva
       this.service.CreateReservation(_data).subscribe({
         next: () => {
           alert('Reserva guardada exitosamente.');
           this.reservationSaved.emit();  // Emitir el evento después de guardar la reserva
-   
           // this.empForm.reset(); // Limpiar el formulario
           this.ref.close();
         },
         error: (err) => {
+          // Verificar si el error tiene una respuesta del backend
+          const errorMessage = err?.error?.message || 'Error al guardar la reserva. Por favor, intente nuevamente.';
           console.error('Error al guardar la reserva:', err);
-          alert('Error al guardar la reserva. Por favor, intente nuevamente.');
+          alert(errorMessage);  // Muestra el mensaje de error del backend, o el mensaje predeterminado si no está disponible
         },
       });
     } else {

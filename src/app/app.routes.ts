@@ -3,6 +3,6 @@ import { ReservationComponent } from './component/reservation/reservation.compon
 
 export const routes: Routes = [
     {
-        path:'reservation', component:ReservationComponent
+        path:'', component:ReservationComponent
     }
 ];
